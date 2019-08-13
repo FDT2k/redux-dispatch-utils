@@ -15,7 +15,7 @@
     "reducer"
   ],
   "dependencies": {
-  
+
   },
   "devDependencies": {
     "@babel/cli": "^7.4.4",
@@ -34,19 +34,6 @@
   },
   "author": "Fabien Di Tore",
   "license": "MIT",
-  "directories": {
-    "example": "examples",
-    "lib": "lib",
-    "test": "test"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/FDT2k/redux-action-types.git"
-  },
-  "bugs": {
-    "url": "https://github.com/FDT2k/redux-module-concurrent-queue/issues"
-  },
-  "homepage": "https://github.com/FDT2k/redux-module-concurrent-queue#readme",
   "jest": {
     "scriptPreprocessor": "<rootDir>/node_modules/babel-jest",
     "testFileExtensions": [
