@@ -1,33 +1,47 @@
-/*ResolveActionCreator & RejectActionCreator are Action Creators which accept
-  which looks like this
+/*
+Author: F.Karsegard
 
-  const onresolve = (payload,meta={}){
-    return {
-    type: 'type',
-    payload,
-    ...meta
-  }
-  }
 
-  payloadResolver is a function that returns the payload
+resolve a promise using redux-thunk
 
-  const payloadResolver = data=> data.whatever
+
+PayloadResolver is a function resolving your payload,
+Reject & ResolveAction creator are the local sync action to dispatch after the promise resolves or not
+
+
+
+makePromiseDispatcher = FN<PayloadResolver> => FN <PayloadResolver> => <ActionCreator> => <ResolvedActionCreator> => (Promise, Object={}) => FN<Dispatcher>;
+
+
+
 */
 
-export const axiosPayloadResolver = data => data.data
+import {identity,curry,compose,trace,prop,tryCatcher} from '@geekagency/composite-js'
+import Promise from 'bluebird'
 
-export const makePromiseDispatch = payloadResolver =>  RejectActionCreator => ResolveActionCreator =>  (promise,meta={}) =>{
-  return async (dispatch,getState)=>{
-    try{
-      let result = await promise;
-      let payload = payloadResolver(result)
-      dispatch(ResolveActionCreator(payload,meta));
-      return Promise.resolve(payload)
-    }catch (error){
-      dispatch(RejectActionCreator(error,meta))
-      return Promise.reject(error)
-    }
+export const makePromiseDispatcher = curry((payloadResolver,errorPayloadResolver,RejectedActionCreator,ResolvedActionCreator,promise) =>{
+  return  (dispatch,getState)=>{
+
+    return tryCatcher(
+       Promise.reject,
+       identity,
+       promise()
+        .then ( compose(dispatch,ResolvedActionCreator,payloadResolver) )
+        .catch( compose(Promise.reject,prop('payload'),dispatch,RejectedActionCreator,errorPayloadResolver) )
+    )
+  /*  try{
+
+      return promise()
+      .then(  compose(dispatch,ResolvedActionCreator,payloadResolver) )
+      .catch( compose(Promise.reject,prop('payload'),dispatch,RejectedActionCreator,errorPayloadResolver) );
+
+    }catch (error){ // always reject
+
+      return Promise.reject(dispatch(RejectedActionCreator(error)))
+
+    }*/
   }
-}
+})
 
-export const makeAxiosDispatch = makePromiseDispatch(axiosPayloadResolver)
+
+export default makePromiseDispatcher(identity,identity);

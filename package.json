@@ -1,6 +1,6 @@
 {
   "name": "@geekagency/redux-dispatch-utils",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Dispatch creators for redux",
   "main": "index.js",
   "scripts": {
@@ -14,7 +14,10 @@
     "redux module",
     "reducer"
   ],
-  "dependencies": {},
+  "dependencies": {
+    "@geekagency/composite-js": "^0.7.2",
+    "bluebird": "^3.7.2"
+  },
   "devDependencies": {
     "@babel/cli": "^7.4.4",
     "@babel/core": "^7.4.5",
